@@ -1,0 +1,6 @@
+{
+  "name": "NEXORA AI",
+  "description": "NEXORA AI V2 - Autonomous AI Personal Operating System with Gemini AI agent, task orchestration, device controls, and secure Keystore integration.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

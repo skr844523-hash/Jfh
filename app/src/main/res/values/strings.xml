@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">NEXORA AI</string>
+    <string name="ai_greeting_ar">أهلاً بك، أنا NEXORA</string>
+    <string name="ai_greeting_en">Welcome, I am NEXORA</string>
+</resources>
