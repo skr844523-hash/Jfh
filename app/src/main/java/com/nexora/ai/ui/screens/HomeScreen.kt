@@ -19,7 +19,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Chat
+import androidx.compose.material.icons.automirrored.filled.Chat
 import androidx.compose.material.icons.filled.FlashlightOn
 import androidx.compose.material.icons.filled.Key
 import androidx.compose.material.icons.filled.PhoneAndroid
@@ -159,7 +159,7 @@ fun HomeScreen(
             QuickActionCard(
                 title = if (isArabic) "محادثة AI" else "AI Chat",
                 subtitle = if (isArabic) "حوار متعدد الجولات" else "Multi-turn Chat",
-                icon = Icons.Default.Chat,
+                icon = Icons.AutoMirrored.Filled.Chat,
                 accentColor = NexoraElectricCyan,
                 modifier = Modifier.weight(1f),
                 onClick = { onNavigateToTab(1) } // Chat tab

@@ -26,30 +26,32 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
+          cache: 'gradle'
 
-      - name: Configure Pre-installed Android SDK & Accept Licenses
+      - name: Pre-accept Android SDK Licenses
         run: |
-          echo "==> Configuring Android SDK..."
-          export ANDROID_HOME=/usr/local/lib/android/sdk
-          export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$PATH
-          
-          # Pre-accept all Android SDK licenses directly
+          echo "==> Configuring Android SDK license acceptance..."
           mkdir -p "$ANDROID_HOME/licenses"
-          echo "24333f8a63b6825ea9c5514f83c2829b004d1fee" > "$ANDROID_HOME/licenses/android-sdk-license"
-          echo "84831b9409646a2495f2980ff52642dd43a612ee" > "$ANDROID_HOME/licenses/android-sdk-preview-license"
-          echo "d56f5187479451eabf01fb78af6dfcb131a6481e" >> "$ANDROID_HOME/licenses/android-sdk-license"
-          echo "89339edd9526690e012448087f764f95e7385f27" >> "$ANDROID_HOME/licenses/android-sdk-license"
+          mkdir -p "$ANDROID_SDK_ROOT/licenses"
           
-          # Accept any remaining licenses via sdkmanager non-interactively
-          if [ -f "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" ]; then
-            yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses || true
-            "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platform-tools" "platforms;android-36" || true
-          fi
+          # Write known license hashes to avoid invoking failing sdkmanager binaries
+          echo -e "\n24333f8a63b6825ea9c5514f83c2829b004d1fee\nd56f5187479451eabf01fb78af6dfcb131a6481e\n89339edd9526690e012448087f764f95e7385f27" | tee "$ANDROID_HOME/licenses/android-sdk-license" > "$ANDROID_SDK_ROOT/licenses/android-sdk-license"
+          echo -e "\n84831b9409646a2495f2980ff52642dd43a612ee" | tee "$ANDROID_HOME/licenses/android-sdk-preview-license" > "$ANDROID_SDK_ROOT/licenses/android-sdk-preview-license"
+          echo -e "\n79124426920f34023a5f4486d34b7f940dcf999b\n84831b9409646a2495f2980ff52642dd43a612ee" | tee "$ANDROID_HOME/licenses/android-googletv-license" > "$ANDROID_SDK_ROOT/licenses/android-googletv-license"
+          echo -e "\n601085b94cd77f0b54ff864069554489b3c4b6d6" | tee "$ANDROID_HOME/licenses/android-sdk-arm-dbt-license" > "$ANDROID_SDK_ROOT/licenses/android-sdk-arm-dbt-license"
+          echo -e "\n33b6a2b64607f11b759f320ef9dff4ae5c47d97a" | tee "$ANDROID_HOME/licenses/google-gdk-license" > "$ANDROID_SDK_ROOT/licenses/google-gdk-license"
+          echo -e "\ne9acab5b5fbb560a72cfa4e73c0cb0f776f9ed78" | tee "$ANDROID_HOME/licenses/mips-android-sysimage-license" > "$ANDROID_SDK_ROOT/licenses/mips-android-sysimage-license"
+          echo "Licenses successfully configured."
 
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
+      - name: Cache Robolectric Dependencies
+        uses: actions/cache@v4
         with:
-          gradle-version: wrapper
+          path: |
+            ~/.m2/repository/org/robolectric
+            ~/.cache/robolectric
+          key: ${{ runner.os }}-robolectric-${{ hashFiles('gradle/libs.versions.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-robolectric-
 
       - name: Grant Execute Permission to Gradle Wrapper
         run: |
