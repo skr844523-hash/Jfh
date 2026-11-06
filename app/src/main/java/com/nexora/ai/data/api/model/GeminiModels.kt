@@ -163,3 +163,39 @@ data class GeminiErrorDetails(
     @Json(name = "status")
     val status: String? = null
 )
+
+/**
+ * Models for querying available models from Google Generative Language API
+ */
+@JsonClass(generateAdapter = true)
+data class ModelListResponse(
+    @Json(name = "models")
+    val models: List<ModelInfo>? = null,
+    @Json(name = "nextPageToken")
+    val nextPageToken: String? = null
+)
+
+@JsonClass(generateAdapter = true)
+data class ModelInfo(
+    @Json(name = "name")
+    val name: String, // e.g. "models/gemini-2.0-flash"
+    @Json(name = "version")
+    val version: String? = null,
+    @Json(name = "displayName")
+    val displayName: String? = null,
+    @Json(name = "description")
+    val description: String? = null,
+    @Json(name = "supportedGenerationMethods")
+    val supportedGenerationMethods: List<String>? = null
+) {
+    /**
+     * Clean model name without "models/" prefix
+     */
+    fun cleanName(): String {
+        return name.removePrefix("models/")
+    }
+
+    fun supportsGenerateContent(): Boolean {
+        return supportedGenerationMethods?.contains("generateContent") == true
+    }
+}
